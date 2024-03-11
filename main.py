@@ -6,8 +6,7 @@ from fastapi import FastAPI
 from config import settings
 
 import auth
-from database import engine
-from models.events import Base
+from database import engine, Base
 from routes import user_routes, auth_routes
 
 

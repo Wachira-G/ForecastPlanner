@@ -16,7 +16,7 @@ You need to have Python 3.11+ installed on your machine. You can download it fro
 
 ```bash
 
-git clone https://github.com/wachira-g/forecastplanner.git
+git clone https://github.com/wachira-g/ForecastPlanner.git
 
 ```
 
@@ -27,15 +27,15 @@ git clone https://github.com/wachira-g/forecastplanner.git
 cd ForecastPlanner
 
 ```
-2\. Create a virtual environment and activate it
+3\. Create a virtual environment and activate it
 ```bash
 
-python3.11 venv venv
+python3.11 -m venv venv
 source venv/bin/activate
 
 ```
 
-3\. Install the requirements
+4\. Install the requirements
 
 ```bash
 
