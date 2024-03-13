@@ -10,19 +10,14 @@ from sqlalchemy.orm import sessionmaker
 
 from config import settings
 
-""" user = os.getenv('POSTGRES_USER', None)
-password = os.getenv('POSTGRES_PWD', None)
-host = os.getenv('POSTGRES_HOST', None)
-port = os.getenv('POSTGRES_PORT', None)
-db = os.getenv('POSTGRES_DB', None) """
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./weatherapp.db"  # | settings.DATABASE_URL
-# SQLALCHEMY_DATABASE_URL = f"postgresql://{user}:{password}@{host}:{port}/{db}"
-# SQLALCHEMY_DATABASE_URL = f"postgresql+psycopg2://weatherapp:password@localhost:5432/weatherapp"
-
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
+# if postgress is the db:
+if settings.DATABASE_URL.startswith("postgres"):
+    engine = create_engine(settings.DATABASE_URL)
+elif settings.DATABASE_URL.startswith('sqlite'):
+    engine = create_engine(
+        settings.DATABASE_URL, connect_args={"check_same_thread": False}
+    )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

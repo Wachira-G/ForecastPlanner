@@ -3,9 +3,10 @@
 """Main module running our app."""
 
 from fastapi import FastAPI
-from config import settings
+
 
 import auth
+from config import settings
 from database import engine, Base
 from routes import user_routes, auth_routes
 
