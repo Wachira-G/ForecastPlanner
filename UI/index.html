@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Forecast Planner - Plan your trip with ease">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Forecast Planner</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!--Navbar-->
+    <nav class="navbar navbar-expand-lg bg-light navbar-light py-4">
+        <div class="container">
+            <a href="#" class="navbar-brand">Forecast Planner</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navmenu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a href="#about" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="#reviews" class="nav-link">Reviews</a></li>
+                    <li class="nav-item"><a href="#contact" class="nav-link">Contacts</a></li>
+                    <li class="nav-item"><a href="#signup" class="nav-link">Sign Up</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-light text-dark p-5 p-lg-0 pt-lg-5 text-center text-sm-start">
+    <div class="container">
+        <div class="d-sm-flex align-items-center justify-content-between">
+            <div>
+                <h1>Planning a trip?</h1>
+                <p class="lead my-4">
+                    Check out the weather conditions at your trip destinations! 
+                </p>
+                <div class="d-grid gap-2">
+                    <div class="col-auto">
+                        <button class="btn btn-warning btn-lg mb-2">Check Forecast</button>
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-warning btn-lg mb-2">Select Trip dates</button>
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-warning btn-lg mb-2">Location</button>
+                    </div>
+                </div>
+            </div>
+            <img class="img-fluid w-50 d-none d-sm-block" src="assets/trvelsmany.jpeg" alt="Plan your trip" style="max-width: 45%;">
+        </div>
+    </div>
+    </section>
+    <!-- Sigup/Login Section-->
+    <section class="bg-secondary text-light p-5">
+    <div class="container">
+        <div class="d-md-flex justify-content-between align-items-center">
+            <h3>Sign Up</h3>
+        </div>
+            <div class="form" id="signup">
+                <form class="row g-3">
+                    <div class="col-auto">
+                        <label for="inputEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="inputEmail" placeholder="Enter your email" required>
+                    </div>
+                    <div class="col-auto">
+                        <label for="inputPassword" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="inputPassword" placeholder="Enter your password" required>
+                    </div>
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-warning">Submit</button>
+                    </div>
+                </form>
+            </div>
+            <p class="lead align-items-end text-md-end py-2">
+                Already have an account?<a href="#login" class="text-decoration-none ms">
+                <span class="text-warning">Log in here.</span></a>
+            </p>
+        </div>
+    </div>
+    </section>
+    <!-- About Section -->
+    <section class="section p-5" id="about">
+    <div class="container">
+        <h2 class="text-center text-dark">About us</h2>
+            <p class="lead text-center text-warning mb-5">
+                Learn more about what we do.
+            </p>
+        <div class="row g-5">
+            <div class="col-md">
+                <div class="card bg-secondary text-light">
+                    <img src="assets/about_us_01.jpg" class="card-img-top img-fluid" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Plan on taking a trip!</h5>
+                        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum vitae natus qui reprehenderit, beatae nobis!</p>
+                        <a href="#" class="card-link text-warning" id="location">Lets Travel!</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="card bg-warning text-dark">
+                    <img src="assets/about_us2.jpg" class="card-img-top img-fluid" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">When is the suitable time?</h5>
+                        <p class="card-text">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolor quaerat culpa atque ab repudiandae ipsa.</p>
+                        <a href="#" class="card-link text-secondary" id="signup">Schedule a trip</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="card bg-secondary text-white">
+                    <img src="assets/notification.jpg" class="card-img-top img-fluid" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Stay up to date</h5>
+                        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste ad qui iusto error alias eaque.</p>
+                        <a href="#" class="card-link text-warning" id="login">Get more access</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+
+    <!-- FAQ and Fedback-->
+    <section class="p-5 bg-secondary">
+    <div class="container">
+        <div class="row g-4 ms-auto">
+            <div class="col-md-6">
+                <h2 class="text-center mb-4">Frequently Asked Questions</h2>
+                <div class="accordion accordion-flush" id="question">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                          Is this a weather forecasting App?
+                        </button>
+                      </h2>
+                      <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#question">
+                        <div class="accordion-body accordion-flush">Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit facilis maiores optio fugit atque! Ab ea consectetur nihil dolorem velit.</div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                          Do I have to sign in?
+                        </button>
+                      </h2>
+                      <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#question">
+                        <div class="accordion-body accordion-flush">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quibusdam dignissimos exercitationem eligendi natus vitae!</div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                          Can you recommend travel destinations?
+                        </button>
+                      </h2>
+                      <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#question">
+                        <div class="accordion-body accordion-flush">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos quam dolor architecto quae est eveniet consectetur nisi ea a reprehenderit praesentium voluptatibus ex cum, consequuntur non doloribus deleniti velit? Placeat.</div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive">
+                          How can I contact customer support?
+                        </button>
+                      </h2>
+                      <div id="flush-collapseFive" class="accordion-collapse collapse" data-bs-parent="#question">
+                        <div class="accordion-body accordion-flush">Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit eum, alias itaque illum doloribus nostrum, deserunt voluptatem excepturi, voluptate officiis dolorem. At laboriosam nobis, adipisci libero repudiandae eius nemo laudantium?</div>
+                      </div>
+                    </div>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix">
+                          How can I update my profile information?
+                        </button>
+                      </h2>
+                      <div id="flush-collapseSix" class="accordion-collapse collapse" data-bs-parent="#question">
+                        <div class="accordion-body accordion-flush">Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum odio laborum beatae numquam ipsum dicta maxime corrupti temporibus. Officiis consequatur temporibus culpa, repellat voluptate ullam at dignissimos reprehenderit enim ex.</div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form">
+                    <h2 class="text-center mb-4">Feedback Form</h2>
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="name" class="visually-hidden" data-placeholder-label="Name (optional)">Name (optional)</label>
+                            <input type="text" class="form-control" id="name" placeholder="Name (optional)">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="visually-hidden" data-placeholder-label="Email (optional)">Email (optional)</label>
+                            <input type="email" class="form-control" id="email" placeholder="Email (optional)">
+                        </div>
+                        <div class="mb-3">
+                            <label for="feedback" class="visually-hidden" data-placeholder-label="Feedback">Feedback</label>
+                            <textarea class="form-control" id="feedback" rows="5" placeholder="Talk to us ..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-warning">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+
+
+    <!-- Reviews section-->
+    <section class="section p-5" id="reviews">
+        <div class="container">
+            <h2 class="text-center text-dark">Reviews</h2>
+                <p class="lead text-center text-warning mb-5">
+                    What do our users say about us?
+                </p>
+            </h2>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <img src="assets/pic-person-01.jpg" class="card-img-top card-avatar rounded-circle mb-3" alt="avatar">
+                            <h3 class="card-title mb-3">Jane Doe</h3>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <img src="assets/pic-person-02.jpg" class="card-img-top card-avatar rounded-circle mb-3" alt="avatar">
+                            <h3 class="card-title mb-3">Ian Smith</h3>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <img src="assets/pic-person-03.jpg" class="card-img-top card-avatar rounded-circle mb-3" alt="avatar">
+                            <h3 class="card-title mb-3">Marie Jones</h3>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <img src="assets/pic-person-02.jpg" class="card-img-top card-avatar rounded-circle mb-3" alt="avatar">
+                            <h3 class="card-title mb-3">Peters Faith</h3>
+                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Footer -->
+    <footer class="py-5 bg-secondary text-dark">
+        <div class="container">
+            <div class="row">
+            <div class="col-md-6">
+                <p class="lead text-right">Copyright &copy; 2024 Forecast Planner</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link text-warning">Terms of use</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link text-warning">Privacy Policy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link text-warning">Cookie Policy</a>
+                    </li>
+                </ul>
+            </div>
+            </div>  
+        </div>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
