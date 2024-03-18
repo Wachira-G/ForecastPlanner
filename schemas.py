@@ -44,8 +44,8 @@ class EventTypeEnum(str, Enum):
 
 
 class UserBase(BaseModel):
-    email: EmailStr
-    phone: Optional[str] = None
+    email: Optional[EmailStr] = None
+    phone: str
     gender: Optional[GenderEnum] = None
 
 

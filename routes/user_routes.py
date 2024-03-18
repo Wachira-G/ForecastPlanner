@@ -6,7 +6,10 @@
 from typing import Generator, List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-import crud, schemas, auth
+
+import crud
+import schemas
+import auth
 from database import get_db
 
 router = APIRouter()
@@ -15,7 +18,7 @@ router = APIRouter()
 # create a user
 @router.post("/users", response_model=schemas.UserShow)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_email(db, email=user.email)
+    db_user = crud.get_user_by_phone(db, phone=user.phone)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     return crud.create_user(db=db, user=user)
@@ -57,7 +60,7 @@ def read_user(user_email: str, db: Session = Depends(get_db)):
 @router.put("/users/{user_id}", response_model=schemas.UserShow)
 def update_user(
     user_id: int,
-    user: schemas.UserCreate,
+    user: schemas.UserUpdate,  # Fix: Change UserCreate to UserUpdate
     db: Session = Depends(get_db),
     current_user: schemas.UserShow = Depends(auth.get_current_user),
 ):

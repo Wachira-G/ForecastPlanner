@@ -26,6 +26,21 @@ def get_user(db: Session, user_id: int) -> models.user.User:
     )
 
 
+def get_user_by_phone(db: Session, phone: str) -> models.user.User:
+    """
+    Retrieve a user from the database based on their Phone number.
+
+    Args:
+        db (Session): The database session.
+        phone (str): The phone no of the user to retrieve.
+
+    Returns:
+        models.user.User: The user object retrieved from the database.
+    """
+    return db.query(models.use.User).filter(
+        models.user.User.phone == phone).first()
+
+
 def get_user_by_email(db: Session, email: str) -> models.user.User:
     """
     Retrieve a user from the database based on their email.
@@ -73,7 +88,7 @@ def create_user(db: Session, user: schemas.UserCreate) -> models.user.User:
         User: The created user object.
     """
     db_user = models.user.User(
-        email=user.email, password=Hasher.get_password_hash(user.password)
+        phone=user.phone, password=Hasher.get_password_hash(user.password)
     )
     for attribute, value in user.model_dump().items():
         if (
@@ -104,6 +119,11 @@ def update_user(
     """
     db_user = get_user(db, user_id)
 
+    if user.phone and user.phone != db_user.email:
+        existing_user = get_user_by_phone(db, user.phone)
+        if existing_user:
+            raise ValueError("Phone number already exists")
+        db_user.phone = user.phone
     if user.email and user.email != db_user.email:
         existing_user = get_user_by_email(db, user.email)
         if existing_user:

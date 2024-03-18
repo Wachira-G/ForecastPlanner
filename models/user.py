@@ -48,8 +48,8 @@ class User(Base):
     __tablename__ = "users"
 
     user_id = Column(Integer, primary_key=True, autoincrement=True)
-    email = Column(String(255), nullable=False)
-    phone = Column(String(20))
+    email = Column(String(255), nullable=True, unique=True)
+    phone = Column(String(20), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
     gender = Column(gender_enum)
 

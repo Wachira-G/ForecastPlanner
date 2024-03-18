@@ -6,12 +6,12 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
-
 from datetime import timedelta
 from fastapi.security import OAuth2PasswordRequestForm
 
-
-import schemas, database, crud
+import schemas
+import database
+import crud
 from auth import (
     authenticate_user,
     create_access_token,

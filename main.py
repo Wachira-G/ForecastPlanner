@@ -4,8 +4,6 @@
 
 from fastapi import FastAPI
 
-
-import auth
 from config import settings
 from database import engine, Base
 from routes import user_routes, auth_routes
