@@ -2,9 +2,10 @@
 
 """Module to created crud operations for our app."""
 
+from pydantic import EmailStr
 from sqlalchemy.orm import Session
 
-import models
+import models.user
 import schemas
 from models.user import Hasher
 
@@ -37,11 +38,11 @@ def get_user_by_phone(db: Session, phone: str) -> models.user.User:
     Returns:
         models.user.User: The user object retrieved from the database.
     """
-    return db.query(models.use.User).filter(
+    return db.query(models.user.User).filter(
         models.user.User.phone == phone).first()
 
 
-def get_user_by_email(db: Session, email: str) -> models.user.User:
+def get_user_by_email(db: Session, email: EmailStr | None) -> models.user.User:
     """
     Retrieve a user from the database based on their email.
 
@@ -104,7 +105,9 @@ def create_user(db: Session, user: schemas.UserCreate) -> models.user.User:
 
 
 def update_user(
-    db: Session, user: schemas.UserUpdate, user_id: int
+    db: Session,
+    user: schemas.UserUpdate,
+    user_id: int,
 ) -> models.user.User:
     """
     Update a user in the database.
@@ -119,19 +122,20 @@ def update_user(
     """
     db_user = get_user(db, user_id)
 
-    if user.phone and user.phone != db_user.email:
+    if user.phone and user.phone != db_user.phone:
         existing_user = get_user_by_phone(db, user.phone)
         if existing_user:
             raise ValueError("Phone number already exists")
-        db_user.phone = user.phone
+        setattr(db_user, "phone", user.phone)
+
     if user.email and user.email != db_user.email:
         existing_user = get_user_by_email(db, user.email)
         if existing_user:
             raise ValueError("Email already exists")
-        db_user.email = user.email
+        setattr(db_user, "email", user.email)
 
     if user.password:
-        db_user.password = Hasher.get_password_hash(user.password)
+        setattr(db_user.password, "password", Hasher.get_password_hash(user.password))
 
     for attribute, value in user.dict(exclude_unset=True).items():
         if attribute not in ["email", "password"] and hasattr(db_user, attribute):

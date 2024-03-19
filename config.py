@@ -3,7 +3,7 @@
 """Module to set the app configuration."""
 
 import os
-from socketserver import DatagramRequestHandler
+from typing import Any, Container, Mapping
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -29,10 +29,12 @@ class Settings:
         POSTGRES_DB: str = os.getenv("POSTGRES_DB", "forecast_planner")
         DATABASE_URL = f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
     else:
-        DATABASE_URL = "sqlite:///./weatherapp.db"
+        DATABASE_URL = "sqlite:///./forecast-planner.db"
 
-    SECRET_KEY: str | None = os.getenv("SECRET_KEY")
-    ALGORITHM: str | None = os.getenv("ALGORITHM")
+    SECRET_KEY: str | bytes | Mapping[str, Any] | Any = os.getenv("SECRET_KEY")
+    if SECRET_KEY is None:
+        raise ValueError("SECRET_KEY must be set")
+    ALGORITHM: str | Container[str] | None = os.getenv("ALGORITHM")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
     REFRESH_TOKEN_EXPIRE_DAYS: int = int(os.getenv("REFRESH_TOKEN", 1))
 

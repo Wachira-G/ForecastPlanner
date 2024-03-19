@@ -139,3 +139,14 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: Union[str, None] = None
+
+
+class TokenBlocklist(BaseModel):
+    """Pydantic Token Blocklist model."""
+
+    jti: str
+    token_type: str
+    exp: datetime
+
+    class Config:
+        from_attributes = True

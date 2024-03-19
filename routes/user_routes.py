@@ -19,8 +19,12 @@ router = APIRouter()
 @router.post("/users", response_model=schemas.UserShow)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_phone(db, phone=user.phone)
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
+    db_user_email = crud.get_user_by_email(db, email=user.email)
+    if db_user or db_user_email:
+        raise HTTPException(
+            status_code=400,
+            detail="Credentials already registered (email or phone)",
+        )
     return crud.create_user(db=db, user=user)
 
 

@@ -18,7 +18,7 @@ def start_application() -> FastAPI:
     """Start a fastAPI application."""
     app = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
     create_tables()
-    app.include_router(auth_routes.router, tags=["auth"])
+    app.include_router(auth_routes.router, tags=["auth"], prefix='/auth')
     app.include_router(user_routes.router, tags=["users"])
     return app
 

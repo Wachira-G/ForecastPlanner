@@ -8,6 +8,7 @@ from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 from datetime import timedelta
 from fastapi.security import OAuth2PasswordRequestForm
+from models.token_blocklist import TokenBlocklist
 
 import schemas
 import database
@@ -26,7 +27,7 @@ from config import settings
 router = APIRouter()
 
 
-@router.post("/token", response_model=schemas.Token)
+@router.post("/login", response_model=schemas.Token)
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: Session = Depends(database.get_db),
@@ -40,11 +41,11 @@ async def login_for_access_token(
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
+        data={"sub": user.phone}, expires_delta=access_token_expires
     )
     refresh_token_expires = timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
     refresh_token = create_refresh_token(
-        data={"sub": user.email}, expires_delta=refresh_token_expires
+        data={"sub": user.phone}, expires_delta=refresh_token_expires
     )
     return schemas.Token(
         access_token=access_token,
@@ -61,18 +62,18 @@ async def refresh_token(
         payload = jwt.decode(
             refresh_token,
             settings.SECRET_KEY,
-            algorithms=[settings.ALGORITHM]
+            algorithms=settings.ALGORITHM,
         )
-        email = payload.get("sub")
-        if email is None:
+        phone = payload.get("sub")
+        if phone is None:
             raise credentials_exception
-        token_data = schemas.TokenData(username=email)
+        token_data = schemas.TokenData(username=phone)
     except JWTError:
         raise credentials_exception
     try:
         if token_data.username is None:
             raise credentials_exception
-        user = crud.get_user_by_email(db, email=token_data.username)
+        user = crud.get_user_by_phone(db, phone=token_data.username)
         if user is None:
             raise credentials_exception
     except Exception as e:
@@ -81,14 +82,14 @@ async def refresh_token(
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
+        data={"sub": user.phone}, expires_delta=access_token_expires
     )
     refresh_token_expires = timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
     refresh_token = create_refresh_token(
-        data={"sub": user.email}, expires_delta=refresh_token_expires
+        data={"sub": user.phone}, expires_delta=refresh_token_expires
     )
-    print("decoded refresh_token: ", jwt.decode(refresh_token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]))
-    print("decoded access_token: ", jwt.decode(access_token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]))
+    print("decoded refresh_token: ", jwt.decode(refresh_token, settings.SECRET_KEY, algorithms=settings.ALGORITHM))
+    print("decoded access_token: ", jwt.decode(access_token, settings.SECRET_KEY, algorithms=settings.ALGORITHM))
     return schemas.Token(
         access_token=access_token, token_type="bearer", refresh_token=refresh_token
     )
@@ -104,8 +105,9 @@ async def read_users_me(
 
 @router.post("/logout")
 async def logout_user(
-    token: str = Depends(oauth2_scheme), db: Session = Depends(database.get_db)
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(database.get_db),
+    current_user: schemas.UserCreate = Depends(get_current_user),
 ):
-    # oauth2_scheme.revoke(token)
-    # implement logut logic here
-    pass
+    TokenBlocklist.save_from_token(token, db)
+    return {"detail": "Successfully logged out."}

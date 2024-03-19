@@ -16,6 +16,7 @@ from sqlalchemy import (
     Integer,
     String,
     Text,
+    text,
 )
 from sqlalchemy.orm import relationship
 from database import Base
@@ -47,7 +48,7 @@ class User(Base):
 
     __tablename__ = "users"
 
-    user_id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, primary_key=True, autoincrement=True, server_default=text("1"))
     email = Column(String(255), nullable=True, unique=True)
     phone = Column(String(20), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
