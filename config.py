@@ -34,7 +34,7 @@ class Settings:
     SECRET_KEY: str | bytes | Mapping[str, Any] | Any = os.getenv("SECRET_KEY")
     if SECRET_KEY is None:
         raise ValueError("SECRET_KEY must be set")
-    ALGORITHM: str | Container[str] | None = os.getenv("ALGORITHM")
+    ALGORITHM: str | Container[str] | None = os.getenv("ALGORITHM", "HS256")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
     REFRESH_TOKEN_EXPIRE_DAYS: int = int(os.getenv("REFRESH_TOKEN", 1))
 
