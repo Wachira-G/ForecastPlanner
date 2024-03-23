@@ -13,7 +13,7 @@ from config import settings
 # if postgress is the db:
 if settings.DATABASE_URL.startswith("postgres"):
     engine = create_engine(settings.DATABASE_URL.replace(
-            "postgres://", "postgresql+psycopg2://", 1)
+            "postgres://", "postgresql://", 1)
     )
 elif settings.DATABASE_URL.startswith("sqlite"):
     engine = create_engine(
