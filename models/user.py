@@ -39,10 +39,6 @@ class Hasher:
         return pwd_context.hash(password)
 
 
-# Create the gender_enum type
-gender_enum = Enum("female", "male", "other", name="gender_enum", create_type=False)
-
-
 class User(Base):
     """Define the functionality of a user of our app."""
 
@@ -54,7 +50,7 @@ class User(Base):
     email = Column(String(255), nullable=True, unique=True)
     phone = Column(String(20), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
-    gender = Column(gender_enum)
+    gender = Column(Enum("female", "male", "other", name="gender_enum", create_type=False))
 
 
 class User_Preferences(Base):
