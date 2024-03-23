@@ -87,7 +87,7 @@ def create_user(db: Session, user: schemas.UserCreate) -> models.user.User:
     for attribute, value in user.model_dump().items():
         if (
             attribute != "password"
-            and attribute != "email"
+            and attribute != "phone"
             and hasattr(db_user, attribute)
         ):
             setattr(db_user, attribute, value)
@@ -129,7 +129,7 @@ def update_user(
         setattr(db_user.password, "password", Hasher.get_password_hash(user.password))
 
     for attribute, value in user.dict(exclude_unset=True).items():
-        if attribute not in ["email", "password"] and hasattr(db_user, attribute):
+        if attribute not in ["email", "password", "phone"] and hasattr(db_user, attribute):
             setattr(db_user, attribute, value)
 
     db.commit()
