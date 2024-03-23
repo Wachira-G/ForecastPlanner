@@ -50,7 +50,7 @@ class User(Base):
     email = Column(String(255), nullable=True, unique=True)
     phone = Column(String(20), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
-    gender = Column(Enum("female", "male", "other", name="gender_enum", create_type=False))
+    gender = Column(Enum("female", "male", "other", name="gender_enum", schema='public', create_type=False))
 
 
 class User_Preferences(Base):
