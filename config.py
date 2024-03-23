@@ -28,7 +28,7 @@ class Settings:
         POSTGRES_DB: str = os.getenv("POSTGRES_DB", "forecast_planner")
         DATABASE_URL = f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
     else:
-        DATABASE_URL = "sqlite:///./forecast-planner.db"
+        DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./forecast-planner.db")
 
     SECRET_KEY: str | bytes | Mapping[str, Any] | Any = os.getenv("SECRET_KEY")
     if SECRET_KEY is None:
