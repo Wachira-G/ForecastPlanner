@@ -88,6 +88,7 @@ class Weather_Provider(Base):
             "Weatherbit",
             "AccuWeather API",
             "TomorrowIO",
+            name="provider_name_enum"
         ),
         nullable=False,
     )

@@ -65,7 +65,7 @@ class User_Preferences(Base):
     preference_id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
     preferred_units = Column(
-        Enum("Celcius", "Fahrenheit")
+        Enum("Celcius", "Fahrenheit", name="preferred_units_enum")
     )  # (e.g., Celsius or Fahrenheit)
     favorite_locations = Column(Text)
     notification_settings = Column(Boolean)

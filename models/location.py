@@ -33,7 +33,7 @@ class Location(Base):
     longitude = Column(DECIMAL(10, 6), nullable=True)
     city_name = Column(String(255), nullable=True)
     country = Column(String(255), nullable=True)
-    location_type = Column(Enum("country", "city"), nullable=True)
+    location_type = Column(Enum("country", "city"), nullable=True, name="location_type_enum")
 
 
 async def get_or_create_location(location: str, db: Session) -> Location:
