@@ -26,7 +26,7 @@ class WeatherProviderNameEnum(str, Enum):
     Weatherstack = "Weatherstack"
     Weatherbit = "Weatherbit"
     AccuWeather_API = "AccuWeather API"
-    ClimaCell = "ClimaCell"
+    TomorrowIO = "TomorrowIO"
 
 
 class LocationTypeEnum(str, Enum):
@@ -82,10 +82,12 @@ class WeatherForecast(BaseModel):
     forecast_id: int
     location_id: int
     date_time: datetime
+    start_time: datetime
+    end_time: datetime
     temperature: Optional[Decimal] = None
     humidity: Optional[Decimal] = None
     wind_speed: Optional[Decimal] = None
-    precipitation_chance: Optional[Decimal] = None
+    precipitation_probability: Optional[Decimal] = None
 
     class Config:
         from_attributes = True
@@ -109,13 +111,13 @@ class WeatherProvider(BaseModel):
 
 
 class Location(BaseModel):
-    location_id: int
-    name: str
-    latitude: Decimal
-    longitude: Decimal
-    city_name: str
-    country: str
-    location_type: LocationTypeEnum
+    location_id: Optional[int] = None
+    name: Optional[str] = None
+    latitude: Optional[Decimal] = None
+    longitude: Optional[Decimal] = None
+    city_name: Optional[str] = None
+    country: Optional[str] = None
+    location_type: Optional[LocationTypeEnum] = None
 
     class Config:
         from_attributes = True

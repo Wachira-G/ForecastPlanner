@@ -18,13 +18,12 @@ class Settings:
     PROJECT_NAME: str = "Forecast Planner API"
     PROJECT_VERSION: str = "0.0.1"
 
-    if os.getenv('POSTGRES_DB'):
+    if os.getenv("POSTGRES_DB"):
         POSTGRES_USER: None | str = os.getenv("POSTGRES_USER")
         POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
         POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "localhost")
         POSTGRES_PORT: str | int = os.getenv(
-            "POSTGRES_PORT",
-            5432
+            "POSTGRES_PORT", 5432
         )  # default postgres port is 5432
         POSTGRES_DB: str = os.getenv("POSTGRES_DB", "forecast_planner")
         DATABASE_URL = f"postgresql+psycopg2://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
@@ -37,6 +36,10 @@ class Settings:
     ALGORITHM: str | Container[str] | None = os.getenv("ALGORITHM", "HS256")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
     REFRESH_TOKEN_EXPIRE_DAYS: int = int(os.getenv("REFRESH_TOKEN", 1))
+    TOMORROW_IO_API_KEY: str | None = os.getenv("TOMORROW_IO_API_KEY")
+    DEFAULT_LOCATION = os.getenv("DEFAULT_LOCATION", "Nairobi")
+    DEFAULT_UNITS = os.getenv("DEFAULT_UNITS", "metric")
+    OPENWEATHERMAP_API_KEY = os.getenv("OPENWEATHERMAP_API_KEY")
 
 
 settings = Settings()

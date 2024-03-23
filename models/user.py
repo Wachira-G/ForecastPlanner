@@ -48,7 +48,9 @@ class User(Base):
 
     __tablename__ = "users"
 
-    user_id = Column(Integer, primary_key=True, autoincrement=True, server_default=text("1"))
+    user_id = Column(
+        Integer, primary_key=True, autoincrement=True, server_default=text("1")
+    )
     email = Column(String(255), nullable=True, unique=True)
     phone = Column(String(20), nullable=False, unique=True)
     password = Column(String(255), nullable=False)

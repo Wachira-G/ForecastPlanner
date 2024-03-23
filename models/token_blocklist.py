@@ -34,7 +34,9 @@ class TokenBlocklist(database.Base):
     @classmethod
     def save_from_token(cls, token, db: Session):
         """Save a block list model from a supplied token string."""
-        token_dict = jwt.decode(token, settings.SECRET_KEY, algorithms=settings.ALGORITHM)
+        token_dict = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=settings.ALGORITHM
+        )
         jti = token_dict.get("jti")
         token_type = "bearer"  # can we get a way to populate this
         exp = datetime.fromtimestamp(token_dict.get("exp", 0))

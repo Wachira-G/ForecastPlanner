@@ -22,8 +22,7 @@ def get_user(db: Session, user_id: int) -> models.user.User:
         User: The user object if found, None otherwise.
     """
     return (
-        db.query(models.user.User).filter(
-            models.user.User.user_id == user_id).first()
+        db.query(models.user.User).filter(models.user.User.user_id == user_id).first()
     )
 
 
@@ -38,8 +37,7 @@ def get_user_by_phone(db: Session, phone: str) -> models.user.User:
     Returns:
         models.user.User: The user object retrieved from the database.
     """
-    return db.query(models.user.User).filter(
-        models.user.User.phone == phone).first()
+    return db.query(models.user.User).filter(models.user.User.phone == phone).first()
 
 
 def get_user_by_email(db: Session, email: EmailStr | None) -> models.user.User:
@@ -53,15 +51,10 @@ def get_user_by_email(db: Session, email: EmailStr | None) -> models.user.User:
     Returns:
         models.user.User: The user object retrieved from the database.
     """
-    return db.query(models.user.User).filter(
-        models.user.User.email == email).first()
+    return db.query(models.user.User).filter(models.user.User.email == email).first()
 
 
-def get_users(
-        db: Session,
-        skip: int = 0,
-        limit: int = 100
-) -> list[models.user.User]:
+def get_users(db: Session, skip: int = 0, limit: int = 100) -> list[models.user.User]:
     """
     Retrieve a list of users from the database.
 
@@ -105,9 +98,7 @@ def create_user(db: Session, user: schemas.UserCreate) -> models.user.User:
 
 
 def update_user(
-    db: Session,
-    user: schemas.UserUpdate,
-    user_id: int,
+    db: Session, user: schemas.UserUpdate, user_id: int
 ) -> models.user.User:
     """
     Update a user in the database.

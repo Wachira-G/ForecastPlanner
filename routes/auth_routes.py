@@ -48,9 +48,7 @@ async def login_for_access_token(
         data={"sub": user.phone}, expires_delta=refresh_token_expires
     )
     return schemas.Token(
-        access_token=access_token,
-        token_type="bearer",
-        refresh_token=refresh_token,
+        access_token=access_token, token_type="bearer", refresh_token=refresh_token
     )
 
 
@@ -60,9 +58,7 @@ async def refresh_token(
 ) -> schemas.Token:
     try:
         payload = jwt.decode(
-            refresh_token,
-            settings.SECRET_KEY,
-            algorithms=settings.ALGORITHM,
+            refresh_token, settings.SECRET_KEY, algorithms=settings.ALGORITHM
         )
         phone = payload.get("sub")
         if phone is None:
@@ -88,8 +84,14 @@ async def refresh_token(
     refresh_token = create_refresh_token(
         data={"sub": user.phone}, expires_delta=refresh_token_expires
     )
-    print("decoded refresh_token: ", jwt.decode(refresh_token, settings.SECRET_KEY, algorithms=settings.ALGORITHM))
-    print("decoded access_token: ", jwt.decode(access_token, settings.SECRET_KEY, algorithms=settings.ALGORITHM))
+    print(
+        "decoded refresh_token: ",
+        jwt.decode(refresh_token, settings.SECRET_KEY, algorithms=settings.ALGORITHM),
+    )
+    print(
+        "decoded access_token: ",
+        jwt.decode(access_token, settings.SECRET_KEY, algorithms=settings.ALGORITHM),
+    )
     return schemas.Token(
         access_token=access_token, token_type="bearer", refresh_token=refresh_token
     )

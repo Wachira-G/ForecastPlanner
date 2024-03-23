@@ -22,8 +22,7 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user_email = crud.get_user_by_email(db, email=user.email)
     if db_user or db_user_email:
         raise HTTPException(
-            status_code=400,
-            detail="Credentials already registered (email or phone)",
+            status_code=400, detail="Credentials already registered (email or phone)"
         )
     return crud.create_user(db=db, user=user)
 
@@ -34,7 +33,7 @@ def read_users(
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db),
-    current_user: schemas.UserShow = Depends(auth.get_current_user)
+    current_user: schemas.UserShow = Depends(auth.get_current_user),
 ):
     users = crud.get_users(db, skip=skip, limit=limit)
     return users
