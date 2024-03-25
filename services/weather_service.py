@@ -60,11 +60,14 @@ async def query_weather_forecast(
                     models.weather.Weather_Forecast.start_time
                     <= datetime.now() + timedelta(days=5),
                 )
-                .order_by(models.weather.Weather_Forecast.date_time.desc())
+                .order_by(
+                    models.weather.Weather_Forecast.start_time,
+                    models.weather.Weather_Forecast.date_time.desc()
+                )
                 .distinct(models.weather.Weather_Forecast.start_time)
                 .all()
             )
-            if existing_forecast:
+            if existing_forecast and len(existing_forecast) >= 6:
                 unique_forecasts = []
                 forecast_dates = set()
                 for forecast in existing_forecast:
