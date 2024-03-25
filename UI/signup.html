@@ -15,12 +15,12 @@
             <form class="align-items-center" id="signupForm" method="POST">
                 <div class="mb-3">
                   <label for="InputEmail" class="form-label">Email address:</label>
-                  <input type="email" class="form-control w-50" id="InputEmail">
+                  <input type="email" class="form-control w-50" id="InputEmail" name="email">
                   <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
                 </div>
                 <div class="mb-3">
                   <label for="InputPhone" class="form-label">Phone:<span aria-label="required">*</span></label>
-                  <input type="tel" id="tel" name="tel" class="form-control w-50" required>
+                  <input type="tel" id="InputPhone" name="phone" class="form-control w-50" required>
                 </div>
                 <div class="form-group mb-3">
                 <fieldset>
@@ -41,13 +41,14 @@
                 </div>
                 <div class="mb-3">
                   <label for="InputPassword1" class="form-label">Password:<span aria-label="required">*</span></label>
-                  <input type="password" class="form-control w-50" id="InputPassword1" required>
+                  <input type="password" class="form-control w-50" id="InputPassword1" name="password" required>
                 </div>
                 <div class="mb-3">
                   <label for="InputPassword2" class="form-label">Confirm Password:<span aria-label="required">*</span></label>
                   <input type="password" class="form-control w-50" id="InputPassword2" required>
                 </div>
                 <button type="submit" class="btn btn-warning">Sign Up</button>
+                <p id="response-message"></p>
             </form>
         </div>
     </div>
