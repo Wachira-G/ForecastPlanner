@@ -7,7 +7,7 @@ from datetime import datetime
 from decimal import Decimal
 from enum import Enum
 from pydantic import BaseModel, EmailStr, Field
-from typing import Optional, Union
+from typing import Dict, List, Optional, Union
 
 
 class GenderEnum(str, Enum):
@@ -93,6 +93,12 @@ class WeatherForecast(BaseModel):
         from_attributes = True
 
 
+class WeatherRecommenderData(BaseModel):
+    temperature: float | int
+    humidity: float | int
+    precipitation_probability: float | int
+
+
 class WeatherReport(WeatherForecast):
     report_id: int
 
@@ -108,6 +114,12 @@ class WeatherProvider(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class Recommendation(BaseModel):
+    description: str
+    suggestions: List[str]
+    weather_descriptions: Dict[str, str]
 
 
 class Location(BaseModel):

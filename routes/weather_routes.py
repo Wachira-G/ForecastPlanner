@@ -3,15 +3,18 @@
 """Weather related endpoints."""
 from datetime import datetime, timedelta, date
 from fastapi import APIRouter, Depends, HTTPException
+from logging import Logger
 from sqlalchemy.orm import Session
 
 import database
 import schemas
 from config import settings
 from models.location import get_or_create_location
+from services.recommendation_service import WeatherAnalyzer, WeatherRecommender
 from services.weather_service import query_weather_forecast
 
 
+logger = Logger(__name__)
 router = APIRouter()
 units = settings.DEFAULT_UNITS
 default_location = settings.DEFAULT_LOCATION
@@ -96,3 +99,26 @@ async def get_a_days_weather(
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/recommendations", response_model=schemas.Recommendation)
+async def get_recommendations(weather_data: schemas.WeatherRecommenderData):
+    """Get recommendations based on the weather data."""
+    try:
+        analyzer = WeatherAnalyzer()
+        recommender = WeatherRecommender()
+
+        weather_description = analyzer.analyze_weather(
+            weather_data.temperature,
+            weather_data.humidity,
+            weather_data.precipitation_probability,
+        )
+
+        recommendations = recommender.generate_recommendations(**weather_description)
+
+        return schemas.Recommendation(**recommendations)
+    except Exception as e:
+        logger.error(f"get_recommendations functions encountered an error: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail="Could not generate a recommendation."
+        )
