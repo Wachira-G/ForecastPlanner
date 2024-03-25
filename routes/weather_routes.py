@@ -2,7 +2,7 @@
 
 """Weather related endpoints."""
 from datetime import datetime, timedelta, date
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Path
 from logging import Logger
 from sqlalchemy.orm import Session
 
@@ -82,7 +82,8 @@ async def get_a_days_weather(
             datetime.now() + timedelta(days=5)
         ):
             raise HTTPException(
-                status_code=404, detail="Weather forecast not available for the day"
+                status_code=404,
+                detail="Weather forecast not available for the day: date need to be today(+5 days)."
             )
         if location_name is not None and location_name != "":
             location = await get_or_create_location(location_name, db)
@@ -95,7 +96,7 @@ async def get_a_days_weather(
             if forecast_day.start_time.date() == day:
                 return schemas.WeatherForecast(**forecast_day.__dict__)
         raise HTTPException(
-            status_code=404, detail="Weather forecast not available for the day"
+            status_code=404, detail="Weather forecast not available for the day."
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -122,3 +123,56 @@ async def get_recommendations(weather_data: schemas.WeatherRecommenderData):
         raise HTTPException(
             status_code=500, detail="Could not generate a recommendation."
         )
+
+
+@router.get("/{forecast_type}", response_model=list[schemas.WeatherForecast])
+async def get_weather_forecast(
+    forecast_type: str = Path(
+        ..., description="The type of forecast to return. Possible values are 'current_weather', 'five-day_weather', 'a_days_weather'"),
+    location_name: str | None = None,
+    latitude: float | None = None,
+    longitude: float | None = None,
+    day: date | None = None,
+    db: Session = Depends(database.get_db),
+):
+    """Get the weather forecast based on the forecast type."""
+    try:
+        if location_name is not None and location_name != "":
+            location = await get_or_create_location(location_name, db)
+        elif latitude is not None and longitude is not None:
+            location = await get_or_create_location(f"{latitude},{longitude}", db)
+        else:
+            location = default_location
+
+        if forecast_type == "current_weather":
+            forecast = await query_weather_forecast(location, db, "realtime")
+            return [schemas.WeatherForecast(**forecast.__dict__)]
+        elif forecast_type == "five-day_weather":
+            forecast = await query_weather_forecast(location, db, "5d")
+            return [schemas.WeatherForecast(**day.__dict__) for day in forecast]
+        elif forecast_type == "a_days_weather":
+            if day is None:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Day parameter is required for a_days_weather forecast type."
+                )
+            if day < datetime.date(datetime.now()) or day > datetime.date(
+                datetime.now() + timedelta(days=5)
+            ):
+                raise HTTPException(
+                    status_code=404,
+                    detail="Weather forecast not available for the day: date need to be today(+5 days)."
+                )
+            forecast = await query_weather_forecast(location, db, "5d")
+            for forecast_day in forecast:
+                if forecast_day.start_time.date() == day:
+                    return [schemas.WeatherForecast(**forecast_day.__dict__)]
+            raise HTTPException(
+                status_code=404, detail="Weather forecast not available for the day."
+            )
+        else:
+            raise HTTPException(
+                status_code=400, detail="Invalid forecast type."
+            )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
