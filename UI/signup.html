@@ -12,7 +12,7 @@
             <h1>Forecast Planner Signup</h1>
         </div>
         <div class="align-items-center">
-            <form class="align-items-center" id="signupForm" method="POST">
+            <form class="align-items-center" id="signupForm" method="post" action="landing.html">
                 <div class="mb-3">
                   <label for="InputEmail" class="form-label">Email address:</label>
                   <input type="email" class="form-control w-50" id="InputEmail" name="email">
@@ -46,6 +46,7 @@
                 <div class="mb-3">
                   <label for="InputPassword2" class="form-label">Confirm Password:<span aria-label="required">*</span></label>
                   <input type="password" class="form-control w-50" id="InputPassword2" required>
+                  <div class="invalid-feedback" id="passwordMismatchError">Passwords must match.</div>
                 </div>
                 <button type="submit" class="btn btn-warning">Sign Up</button>
                 <p id="response-message"></p>
