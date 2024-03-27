@@ -5,10 +5,10 @@ import { Router, Switch, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-import Login from "./components/login.component";
-import Register from "./components/register.component";
-import Home from "./components/home.component";
-import Profile from "./components/profile.component";
+import Login from "./components/login-component";
+import Register from "./components/register-component";
+import Home from "./components/home-component";
+// import Profile from "./components/profile";
 
 import { logout } from "./actions/auth";
 import { clearMessage } from "./actions/message";
@@ -16,7 +16,7 @@ import { clearMessage } from "./actions/message";
 import { history } from './helpers/history';
 
 // import AuthVerify from "./common/auth-verify";
-import EventBus from "./common/EventBus";
+import EventBus from "./common/event-bus";
 
 class App extends Component {
   constructor(props) {
@@ -63,10 +63,13 @@ class App extends Component {
     return (
       <Router history={history}>
         <div>
-          <nav className="navbar navbar-expand navbar-dark bg-dark">
+          <nav className="navbar navbar-expand navbar-dark bg-dark py-4">
             <Link to={"/"} className="navbar-brand">
               Forcast Planner
             </Link>
+            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+            <span className="navbar-toggler-icon"></span>
+            </button>
             <div className="navbar-nav mr-auto">
               <li className="nav-item">
                 <Link to={"/home"} className="nav-link">
@@ -98,6 +101,10 @@ class App extends Component {
               </div>
             ) : (
               <div className="navbar-nav ml-auto">
+              <li className="nav-item"><a href="#weather" className="nav-link">Weather</a></li>
+               <li className="nav-item"><a href="#about" className="nav-link">About</a></li>
+               <li className="nav-item"><a href="#reviews" className="nav-link">Reviews</a></li>
+               <li className="nav-item"><a href="#contact" className="nav-link">Contacts</a></li>
                 <li className="nav-item">
                   <Link to={"/login"} className="nav-link">
                     Login
@@ -113,12 +120,11 @@ class App extends Component {
             )}
           </nav>
 
-          <div className="container mt-3">
+          <div className="container">
             <Switch>
               <Route exact path={["/", "/home"]} component={Home} />
               <Route exact path="/login" component={Login} />
               <Route exact path="/register" component={Register} />
-              <Route exact path="/profile" component={Profile} />
             </Switch>
           </div>
 

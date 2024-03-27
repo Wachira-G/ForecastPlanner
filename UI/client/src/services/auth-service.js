@@ -13,13 +13,21 @@ class AuthService {
    * Method: login
    * Description: Sends a POST request to the API endpoint for user login with provided phone number and password.
    *              If login is successful, stores user data in the browser's localStorage.
-   * @param {string} phone - User's phone number
+   * @param {string} username - User's phone number
    * @param {string} password - User's password
    * @returns {Promise} Promise object representing the login request
    */
-  login(phone, password) {
+  login(username, password) {
+    const headers = {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    };
+
+    const formData = new URLSearchParams();
+    formData.append('username', username);
+    formData.append('password', password);
+
     return axios
-      .post(API_URL + "/signin", { phone, password })
+      .post(`${API_URL}/auth/login`, formData, { headers })
       .then((response) => {
         if (response.data.accessToken) {
           // If login successful, store user data in localStorage
@@ -47,7 +55,7 @@ class AuthService {
    * @returns {Promise} Promise object representing the registration request
    */
   register(phone, email, password) {
-    return axios.post(API_URL + "/signup", {
+    return axios.post(API_URL + "/register", {
       phone,
       email,
       password,
