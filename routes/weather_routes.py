@@ -29,7 +29,41 @@ async def get_current_weather(
     longitude: float | None = None,
     db: Session = Depends(database.get_db),
 ):
-    """Get the weather forecast for location."""
+    """Get the current weather forecast for a location.
+
+    Args:
+        location_name (str, optional): The name of the location. Defaults to None.
+        latitude (float, optional): The latitude of the location. Defaults to None.
+        longitude (float, optional): The longitude of the location. Defaults to None.
+        db (Session, optional): The database session. Defaults to Depends(database.get_db).
+
+    Returns:
+        schemas.WeatherForecast: The current weather forecast for the specified location or default_location(Nairobi).
+
+    Raises:
+        HTTPException: If there is an error retrieving the weather forecast.
+
+    Examples:
+        Example usage to get the current weather forecast using location name as input:
+        ```python
+        {
+            "location_name": "New York",
+        }
+        ```
+        Example usage to get the current weather forecast using latitude and longitude:
+        ```python
+        {
+            "latitude": 40.7128,
+            "longitude": -74.0060
+        }
+        ```
+        Example usage to get the current weather forecast using default location:
+        ```python
+        {
+            "location_name": ""
+        }
+        ```
+    """
     try:
         if location_name is not None and location_name != "":
             location = await get_or_create_location(location_name, db)
@@ -44,7 +78,6 @@ async def get_current_weather(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# Get a five day forecast for a location
 @router.get("/five-day_weather", response_model=list[schemas.WeatherForecast])
 async def get_five_day_forecast(
     location_name: str | None = None,
@@ -52,7 +85,41 @@ async def get_five_day_forecast(
     longitude: float | None = None,
     db: Session = Depends(database.get_db),
 ):
-    """Get a five day weather forecast for a location."""
+    """Get a five day weather forecast for a location.
+
+    Args:
+        location_name (str, optional): The name of the location. Defaults to None.
+        latitude (float, optional): The latitude of the location. Defaults to None.
+        longitude (float, optional): The longitude of the location. Defaults to None.
+        db (Session, optional): The database session. Defaults to Depends(database.get_db).
+
+    Returns:
+        list[schemas.WeatherForecast]: The five day weather forecast for the location.
+
+    Raises:
+        HTTPException: If there is an error retrieving the weather forecast.
+
+    Examples:
+        Example usage to get the five day weather forecast using location name as input:
+        ```python
+        {
+            "location_name": "New York",
+        }
+        ```
+        Example usage to get the five day weather forecast using latitude and longitude:
+        ```python
+        {
+            "latitude": 40.7128,
+            "longitude": -74.0060
+        }
+        ```
+        Example usage to get the five day weather forecast using default location:
+        ```python
+        {
+            "location_name": ""
+        }
+        ```
+    """
     try:
         if location_name is not None and location_name != "":
             location = await get_or_create_location(location_name, db)
@@ -67,7 +134,6 @@ async def get_five_day_forecast(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# Get particular day's weather forecast for a location if within today + 5das else return that it not availble to forecast
 @router.get("/a_days_weather", response_model=schemas.WeatherForecast)
 async def get_a_days_weather(
     day: date,
@@ -76,7 +142,45 @@ async def get_a_days_weather(
     longitude: float | None = None,
     db: Session = Depends(database.get_db),
 ):
-    """Get the weather forecast for a particular day."""
+    """Get the weather forecast for a particular day.
+
+    Args:
+        day (date): The date for which to retrieve the weather forecast.
+        location_name (str, optional): The name of the location. Defaults to None.
+        latitude (float, optional): The latitude of the location. Defaults to None.
+        longitude (float, optional): The longitude of the location. Defaults to None.
+        db (Session, optional): The database session. Defaults to Depends(database.get_db).
+
+    Returns:
+        schemas.WeatherForecast: The weather forecast for the particular day.
+
+    Raises:
+        HTTPException: If the weather forecast is not available for the day or if there is an error retrieving the forecast.
+
+    Examples:
+        Example usage to get the weather forecast for a particular day using location name as input:
+        ```python
+        {
+            "day": "2022-12-31",
+            "location_name": "New York",
+        }
+        ```
+        Example usage to get the weather forecast for a particular day using latitude and longitude:
+        ```python
+        {
+            "day": "2022-12-31",
+            "latitude": 40.7128,
+            "longitude": -74.0060
+        }
+        ```
+        Example usage to get the weather forecast for a particular day using default location:
+        ```python
+        {
+            "day": "2022-12-31",
+            "location_name": ""
+        }
+        ```
+    """
     try:
         if day < datetime.date(datetime.now()) or day > datetime.date(
             datetime.now() + timedelta(days=5)
@@ -104,7 +208,27 @@ async def get_a_days_weather(
 
 @router.post("/recommendations", response_model=schemas.Recommendation)
 async def get_recommendations(weather_data: schemas.WeatherRecommenderData):
-    """Get recommendations based on the weather data."""
+    """Get recommendations based on the weather data.
+
+    Args:
+        weather_data (schemas.WeatherRecommenderData): The weather data for generating recommendations.
+
+    Returns:
+        schemas.Recommendation: The generated recommendations based on the weather data.
+
+    Raises:
+        HTTPException: If there is an error generating the recommendations.
+
+    Examples:
+        Example usage to get recommendations based on the weather data:
+        ```python
+        {
+            "temperature": 25,
+            "humidity": 80,
+            "precipitation_probability": 0.5
+        }
+        ```
+    """
     try:
         analyzer = WeatherAnalyzer()
         recommender = WeatherRecommender()
@@ -128,14 +252,66 @@ async def get_recommendations(weather_data: schemas.WeatherRecommenderData):
 @router.get("/{forecast_type}", response_model=list[schemas.WeatherForecast])
 async def get_weather_forecast(
     forecast_type: str = Path(
-        ..., description="The type of forecast to return. Possible values are 'current_weather', 'five-day_weather', 'a_days_weather'"),
+        ...,
+        description="The type of forecast to return. Possible values are 'current_weather', 'five-day_weather', 'a_days_weather'"
+    ),
     location_name: str | None = None,
     latitude: float | None = None,
     longitude: float | None = None,
     day: date | None = None,
     db: Session = Depends(database.get_db),
 ):
-    """Get the weather forecast based on the forecast type."""
+    """Get the weather forecast based on the forecast type.
+
+    This function retrieves the weather forecast based on the specified forecast type.
+    The forecast type can be one of the following:
+    - 'current_weather': Returns the current weather forecast.
+    - 'five-day_weather': Returns the weather forecast for the next five days.
+    - 'a_days_weather': Returns the weather forecast for a specific day.
+
+    The weather forecast can be retrieved using either the location name or the latitude and longitude coordinates.
+    If the location name is provided, it will be used to retrieve the location from the database.
+    If the latitude and longitude coordinates are provided, they will be used to create a new location in the database.
+
+    Args:
+        forecast_type (str): The type of forecast to return.
+        location_name (str, optional): The name of the location. Defaults to None.
+        latitude (float, optional): The latitude of the location. Defaults to None.
+        longitude (float, optional): The longitude of the location. Defaults to None.
+        day (date, optional): The date for which to retrieve the weather forecast. Defaults to None.
+        db (Session, optional): The database session. Defaults to Depends(database.get_db).
+
+    Returns:
+        list[schemas.WeatherForecast]: The weather forecast based on the forecast type.
+
+    Raises:
+        HTTPException: If the forecast type is invalid, or if the weather forecast is not available for the specified day, or if there is an error retrieving the forecast.
+
+    Examples:
+        Example usage to get the current weather forecast:
+        ```python
+        {
+            "forecast_type": "current_weather",
+            "location_name": "New York"
+        }
+        ```
+        Example usage to get the five day weather forecast:
+        ```python
+        {
+            "forecast_type": "five-day_weather",
+            "latitude": 40.7128,
+            "longitude": -74.0060
+        }
+        ```
+        Example usage to get the weather forecast for a particular day:
+        ```python
+        {
+            "forecast_type": "a_days_weather",
+            "day": "2022-12-31",
+            "location_name": "New York"
+        }
+        ```
+    """
     try:
         if location_name is not None and location_name != "":
             location = await get_or_create_location(location_name, db)
@@ -172,7 +348,8 @@ async def get_weather_forecast(
             )
         else:
             raise HTTPException(
-                status_code=400, detail="Invalid forecast type."
+                status_code=400,
+                detail="Invalid forecast type provided. Valid values are 'current_weather', 'five-day_weather', 'a_days_weather'."
             )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

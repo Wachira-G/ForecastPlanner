@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Module to hold routes relate authentication and authorisation"""
+"""Module to hold routes related to authentication and authorization"""
 
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -32,6 +32,28 @@ async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: Session = Depends(database.get_db),
 ) -> schemas.Token:
+    """
+    Endpoint to authenticate a user and generate an access token.
+
+    Args:
+        form_data (OAuth2PasswordRequestForm): Form data containing the username and password.
+        db (Session, optional): Database session. Defaults to Depends(database.get_db).
+
+    Returns:
+        schemas.Token: Token response containing the access token and refresh token.
+
+    Raises:
+        HTTPException: If the username or password is incorrect.
+
+    Examples:
+        Example usage to authenticate a user:
+        ```python
+        {
+            "username": "test",
+            "password": "test"
+        }
+        ```
+    """
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
@@ -56,6 +78,27 @@ async def login_for_access_token(
 async def refresh_token(
     refresh_token: str, db: Session = Depends(database.get_db)
 ) -> schemas.Token:
+    """
+    Endpoint to refresh an access token using a refresh token.
+
+    Args:
+        refresh_token (str): Refresh token.
+        db (Session, optional): Database session. Defaults to Depends(database.get_db).
+
+    Returns:
+        schemas.Token: Token response containing the new access token and refresh token.
+
+    Raises:
+        credentials_exception: If the refresh token is invalid.
+
+    Examples:
+        Example usage to refresh an access token:
+        ```python
+        {
+            "refresh_token": "refresh
+        }
+        ```
+    """
     try:
         payload = jwt.decode(
             refresh_token, settings.SECRET_KEY, algorithms=settings.ALGORITHM
@@ -84,14 +127,6 @@ async def refresh_token(
     refresh_token = create_refresh_token(
         data={"sub": user.phone}, expires_delta=refresh_token_expires
     )
-    print(
-        "decoded refresh_token: ",
-        jwt.decode(refresh_token, settings.SECRET_KEY, algorithms=settings.ALGORITHM),
-    )
-    print(
-        "decoded access_token: ",
-        jwt.decode(access_token, settings.SECRET_KEY, algorithms=settings.ALGORITHM),
-    )
     return schemas.Token(
         access_token=access_token, token_type="bearer", refresh_token=refresh_token
     )
@@ -102,6 +137,26 @@ async def read_users_me(
     current_user: schemas.UserCreate = Depends(get_current_user),
     db: Session = Depends(database.get_db),
 ):
+    """
+    Endpoint to get the details of the currently authenticated user.
+
+    User must be authenticated to access this endpoint.
+
+    Args:
+        current_user (schemas.UserCreate, optional): Current authenticated user. Defaults to Depends(get_current_user).
+        db (Session, optional): Database session. Defaults to Depends(database.get_db).
+
+    Returns:
+        schemas.UserShow: User details.
+
+    Examples:
+        Example usage to get the details of the currently authenticated user:
+        ```python
+        {
+            "id": 1
+        }
+        ```
+    """
     return current_user
 
 
@@ -111,5 +166,26 @@ async def logout_user(
     db: Session = Depends(database.get_db),
     current_user: schemas.UserCreate = Depends(get_current_user),
 ):
+    """
+    Endpoint to log out a user by adding the token to the blocklist.
+
+    User must be authenticated to access this endpoint.
+
+    Args:
+        token (str, optional): Access token. Defaults to Depends(oauth2_scheme).
+        db (Session, optional): Database session. Defaults to Depends(database.get_db).
+        current_user (schemas.UserCreate, optional): Current authenticated user. Defaults to Depends(get_current_user).
+
+    Returns:
+        dict: Success message.
+
+    Examples:
+        Example usage to log out a user:
+        ```python
+        {
+            "token": "token"
+        }
+        ```
+    """
     TokenBlocklist.save_from_token(token, db)
     return {"detail": "Successfully logged out."}

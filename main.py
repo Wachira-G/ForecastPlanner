@@ -11,12 +11,29 @@ from routes import user_routes, auth_routes, weather_routes
 
 
 def create_tables() -> None:
-    """Create database tables."""
+    """
+    Create database tables.
+
+    This function creates the necessary tables in the database using SQLAlchemy's
+    `create_all` method and the specified database engine.
+
+    Returns:
+        None
+    """
     Base.metadata.create_all(bind=engine)
 
 
 def start_application() -> FastAPI:
-    """Start a fastAPI application."""
+    """
+    Start a FastAPI application.
+
+    This function initializes a FastAPI application with the specified title and version.
+    It also adds middleware for handling CORS and includes the routers for authentication,
+    user management, and weather data.
+
+    Returns:
+        FastAPI: The initialized FastAPI application.
+    """
     app = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
     create_tables()
     origins = [
