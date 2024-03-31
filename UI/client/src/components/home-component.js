@@ -1,5 +1,71 @@
-import React from 'react';
-const Home = () => {
+import React, { Component } from "react";
+import UserService from "../services/user-service";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSun, faCloudRain, faSnowflake, faWind } from "@fortawesome/free-solid-svg-icons";
+
+export default class Home extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      weatherData: [],
+      cityInput: "",
+    };
+  }
+
+  componentDidMount() {
+     // Fetch weather data for default city (Nairobi)
+     this.fetchWeatherData("Nairobi");
+   }
+
+   fetchWeatherData(city) {
+  UserService.getPublicContent(city)
+    .then((response) => {
+      this.setState({
+        weatherData: response.data,
+      });
+    })
+    .catch((error) => {
+      console.error("Error fetching weather data:", error);
+    });
+}
+
+handleCityInputChange = (event) => {
+  this.setState({
+    cityInput: event.target.value,
+  });
+};
+
+handleSearch = () => {
+  const { cityInput } = this.state;
+  if (cityInput.trim() !== "") {
+    this.fetchWeatherData(cityInput);
+  }
+};
+
+getWeatherIcon = (weatherCode) => {
+   switch (weatherCode) {
+     case "Clear":
+       return <FontAwesomeIcon icon={faSun} />;
+     case "Rain":
+       return <FontAwesomeIcon icon={faCloudRain} />;
+     case "Snow":
+       return <FontAwesomeIcon icon={faSnowflake} />;
+     default:
+       return <FontAwesomeIcon icon={faWind} />;
+   }
+ };
+
+formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear() % 100; // Get last two digits of year
+  return `${day < 10 ? "0" + day : day}-${month < 10 ? "0" + month : month}-${year}`;
+};
+
+  render() {
+     const { weatherData, cityInput } = this.state;
   return (
     <div>
     <section className="bg-light text-dark p-5 p-lg-0 pt-lg-5 text-center text-sm-start">
@@ -17,61 +83,61 @@ const Home = () => {
       </div>
     </section>
     <section className="p-5" id="weather">
-         <div className="container weather-container">
-           <div className="weather-input">
-             <h4>Enter Name Of A City</h4>
-             <input className="city-input" type="text" placeholder="E.g., Nairobi, Kisumu" />
-             <button className="search-btn bg-warning">Search</button>
-             <div className="separator"></div>
-             <button className="location-btn">Use Current Location</button>
-           </div>
-           <div className="weather-data">
-             <div className="current-weather">
-               <div className="details">
-                 <h2>_______ ( ______ )</h2>
-                 <h6>Temperature: __°C</h6>
-                 <h6>Wind: __ M/S</h6>
-                 <h6>Humidity: __%</h6>
-               </div>
-             </div>
-             <div className="days-forecast">
-               <h2>5-Days Forecast</h2>
-               <ul className="weather-cards">
-                 <li className="card">
-                   <h3>( ______ )</h3>
-                   <h6>Temp: __°C</h6>
-                   <h6>Wind: __ M/S</h6>
-                   <h6>Humidity: __%</h6>
-                 </li>
-                 <li className="card">
-                   <h3>( ______ )</h3>
-                   <h6>Temp: __°C</h6>
-                   <h6>Wind: __ M/S</h6>
-                   <h6>Humidity: __%</h6>
-                 </li>
-                 <li className="card">
-                   <h3>( ______ )</h3>
-                   <h6>Temp: __°C</h6>
-                   <h6>Wind: __ M/S</h6>
-                   <h6>Humidity: __%</h6>
-                 </li>
-                 <li className="card">
-                   <h3>( ______ )</h3>
-                   <h6>Temp: __°C</h6>
-                   <h6>Wind: __ M/S</h6>
-                   <h6>Humidity: __%</h6>
-                 </li>
-                 <li className="card">
-                   <h3>( ______ )</h3>
-                   <h6>Temp: __°C</h6>
-                   <h6>Wind: __ M/S</h6>
-                   <h6>Humidity: __%</h6>
-                 </li>
-               </ul>
-             </div>
-           </div>
-         </div>
-       </section>
+      <div className="container weather-container">
+        <div className="weather-input">
+          <h4>Enter Name Of A City</h4>
+          <input
+            className="city-input"
+            type="text"
+            placeholder="E.g., Nairobi, Kisumu"
+            value={cityInput}
+            onChange={this.handleCityInputChange}
+          />
+          <button className="search-btn bg-warning" onClick={this.handleSearch}>
+            Search
+          </button>
+          <div className="separator"></div>
+          <button className="location-btn">Use Current Location</button>
+        </div>
+        <div className="weather-data">
+          <div className="current-weather">
+            <div className="details">
+              {weatherData.length > 0 ? (
+                <div>
+                  <h2>{this.formatDate(weatherData[0].date_time)}</h2>
+                  <h3>{weatherData[0].location_id}</h3>
+                  <h6>Temperature: {weatherData[0].temperature}°C</h6>
+                  <h6>Wind: {weatherData[0].wind_speed} M/S</h6>
+                  <h6>Humidity: {weatherData[0].humidity}%</h6>
+                  <h6>Precipitation: {weatherData[0].precipitation_probability}</h6>
+                  {/* Add weather icon */}
+                  <div>{this.getWeatherIcon(weatherData[0].weather)}</div>
+                </div>
+              ) : (
+                <p>Loading...</p>
+              )}
+            </div>
+          </div>
+          <div className="days-forecast">
+            <h2>5-Days Forecast</h2>
+            <ul className="weather-cards">
+              {weatherData.slice(1, 6).map((forecast) => (
+                <li className="card" key={forecast.forecast_id}>
+                  <h3>{this.formatDate(forecast.date_time)}</h3>
+                  <h4>{forecast.location_id}</h4>
+                  <h6>Temp: {forecast.temperature}°C</h6>
+                  <h6>Wind: {forecast.wind_speed} M/S</h6>
+                  <h6>Humidity: {forecast.humidity}%</h6>
+                  <h6>Precipitation: {forecast.precipitation_probability}</h6>
+                  {/* Add weather icon */}
+                  <div>{this.getWeatherIcon(forecast.weather)}</div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
 
         <section className="section bg-secondary p-5" id="about">
           <div className="container">
@@ -245,5 +311,4 @@ const Home = () => {
         </div>
       );
     };
-
-    export default Home;
+}

@@ -1,7 +1,7 @@
 // Selecting HTML elements
 const cityInput = document.querySelector(".city-input");
 const searchButton = document.querySelector(".search-btn");
-const locationButton = document.querySelector(".location-btn");
+const locationButton = document.querySelector("#locationNameBtn");
 const currentWeatherDiv = document.querySelector(".current-weather");
 const weatherCardsDiv = document.querySelector(".weather-cards");
 

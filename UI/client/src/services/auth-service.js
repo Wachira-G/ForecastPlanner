@@ -29,10 +29,11 @@ class AuthService {
     return axios
       .post(`${API_URL}/auth/login`, formData, { headers })
       .then((response) => {
-        if (response.data.accessToken) {
+        if (response.data.access_token) {
           // If login successful, store user data in localStorage
           localStorage.setItem("user", JSON.stringify(response.data));
         }
+        console.log(response.data.access_token);
         return response.data;
       });
   }

@@ -15,9 +15,13 @@ class UserService {
    * Description: Sends a GET request to the API endpoint to retrieve public content.
    * @returns {Promise} Promise object representing the request for public content
    */
-  getPublicContent() {
-    return axios.get(API_URL + "/all");
-  }
+   getPublicContent(location_name) {
+     return axios.get(API_URL + "/five-day_weather", {
+       params: {
+         location_name: location_name
+       }
+     });
+   }
 
   /**
    * Method: getUserBoard
