@@ -54,7 +54,7 @@ class Weather_Forecast(Base):
 
 
 class Weather_Report(Base):
-    """Define a historical weather report for a parricular location."""
+    """Define a historical weather report for a particular location."""
 
     __tablename__ = "weather_reports"
 

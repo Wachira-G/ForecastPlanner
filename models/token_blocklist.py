@@ -7,6 +7,7 @@ from fastapi import Depends
 from jose import jwt
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import Session
+import asyncio
 
 import database
 from config import settings
@@ -48,13 +49,28 @@ class TokenBlocklist(database.Base):
         """Check if a token is blocklisted."""
         query = db.query(cls).filter_by(jti=jti).first()
         return bool(query)
+    
+    @staticmethod
+    async def get_all_blocklisted_tokens(db: Session):
+        """Get all blocklisted tokens."""
+        return db.query(TokenBlocklist).all()
 
     @staticmethod
-    def clean_block_list(db: Session = Depends(database.get_db)):
+    async def clean_block_list(db: Session):
         """Delete all block list entries."""
         now = datetime.now()
-        blocklisted_tokens = db.query(TokenBlocklist).all()
+        blocklisted_tokens = await TokenBlocklist.get_all_blocklisted_tokens(db)
         for token in blocklisted_tokens:
             if token.exp <= now:
                 db.delete(token)
         db.commit()
+
+    @staticmethod
+    async def clean_db_periodically():
+        while True:
+            db: Session = next(database.get_db())
+            try:
+                await TokenBlocklist.clean_block_list(db)
+                await asyncio.sleep(3600 * 6) # Every six hours
+            finally:
+                db.close()

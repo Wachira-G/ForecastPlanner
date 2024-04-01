@@ -81,6 +81,7 @@ class UserPreferences(BaseModel):
 class WeatherForecast(BaseModel):
     forecast_id: int
     location_id: int
+    location_name: str
     date_time: datetime
     start_time: datetime
     end_time: datetime

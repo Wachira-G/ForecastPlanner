@@ -2,8 +2,9 @@
 
 """Weather related endpoints."""
 from datetime import datetime, timedelta, date
+from typing import Dict, List, Optional, Union
 from fastapi import APIRouter, Depends, HTTPException, Path
-from logging import Logger
+import logging
 from sqlalchemy.orm import Session
 
 import database
@@ -14,7 +15,7 @@ from services.recommendation_service import WeatherAnalyzer, WeatherRecommender
 from services.weather_service import query_weather_forecast
 
 
-logger = Logger(__name__)
+logger = logging.getLogger(__name__)
 router = APIRouter()
 units = settings.DEFAULT_UNITS
 default_location = settings.DEFAULT_LOCATION
@@ -72,10 +73,13 @@ async def get_current_weather(
         else:
             location = await get_or_create_location(default_location, db)
         forecast = await query_weather_forecast(location, db, "realtime")
-        forecast_object = schemas.WeatherForecast(**forecast.__dict__)
+        forecast_dict = forecast.__dict__
+        forecast_dict["location_name"] = location.city_name
+        forecast_object = schemas.WeatherForecast(**forecast_dict)
         return forecast_object
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"get_current_weather function encountered an error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Could not retrieve the current weather forecast.")
 
 
 @router.get("/five-day_weather", response_model=list[schemas.WeatherForecast])
@@ -126,12 +130,22 @@ async def get_five_day_forecast(
         elif latitude is not None and longitude is not None:
             location = await get_or_create_location(f"{latitude},{longitude}", db)
         else:
-            location = default_location
+            location = await get_or_create_location(default_location, db)
         forecast = await query_weather_forecast(location, db, "5d")
-        forecast_objects = [schemas.WeatherForecast(**day.__dict__) for day in forecast]
+        #forecast_dict = forecast.__dict__
+        #forecast_dict["location_name"] = location.city_name
+        #forecast_object = schemas.WeatherForecast(**forecast_dict)
+        # create a location_name key in every forecast item in forecast
+        forecast_dicts: List[dict] = []
+        for day in forecast:
+            day_dict = day.__dict__
+            day_dict["location_name"] = location.city_name
+            forecast_dicts.append(day_dict)
+        forecast_objects = [schemas.WeatherForecast(**day) for day in forecast_dicts]
         return forecast_objects
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"get_five_day_forecast function encountered an error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Could not retrieve the five day weather forecast.")
 
 
 @router.get("/a_days_weather", response_model=schemas.WeatherForecast)
@@ -198,12 +212,15 @@ async def get_a_days_weather(
         forecast = await query_weather_forecast(location, db, "5d")
         for forecast_day in forecast:
             if forecast_day.start_time.date() == day:
-                return schemas.WeatherForecast(**forecast_day.__dict__)
+                forecast_day_dict  = forecast_day.__dict__
+                forecast_day_dict["location_name"] = location.city_name
+                return schemas.WeatherForecast(**forecast_day_dict)
         raise HTTPException(
             status_code=404, detail="Weather forecast not available for the day."
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"get_a_days_weather function encountered an error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Could not retrieve the weather forecast for the day.")
 
 
 @router.post("/recommendations", response_model=schemas.Recommendation)
@@ -245,7 +262,8 @@ async def get_recommendations(weather_data: schemas.WeatherRecommenderData):
     except Exception as e:
         logger.error(f"get_recommendations functions encountered an error: {str(e)}")
         raise HTTPException(
-            status_code=500, detail="Could not generate a recommendation."
+            status_code=500,
+            detail="Could not generate a recommendation."
         )
 
 
@@ -313,19 +331,10 @@ async def get_weather_forecast(
         ```
     """
     try:
-        if location_name is not None and location_name != "":
-            location = await get_or_create_location(location_name, db)
-        elif latitude is not None and longitude is not None:
-            location = await get_or_create_location(f"{latitude},{longitude}", db)
-        else:
-            location = default_location
-
         if forecast_type == "current_weather":
-            forecast = await query_weather_forecast(location, db, "realtime")
-            return [schemas.WeatherForecast(**forecast.__dict__)]
+            return await get_current_weather(location_name, latitude, longitude, db)
         elif forecast_type == "five-day_weather":
-            forecast = await query_weather_forecast(location, db, "5d")
-            return [schemas.WeatherForecast(**day.__dict__) for day in forecast]
+            return await get_five_day_forecast(location_name, latitude, longitude, db)
         elif forecast_type == "a_days_weather":
             if day is None:
                 raise HTTPException(
@@ -339,17 +348,68 @@ async def get_weather_forecast(
                     status_code=404,
                     detail="Weather forecast not available for the day: date need to be today(+5 days)."
                 )
-            forecast = await query_weather_forecast(location, db, "5d")
-            for forecast_day in forecast:
-                if forecast_day.start_time.date() == day:
-                    return [schemas.WeatherForecast(**forecast_day.__dict__)]
-            raise HTTPException(
-                status_code=404, detail="Weather forecast not available for the day."
-            )
+            return await get_a_days_weather(day, location_name, latitude, longitude, db)
         else:
             raise HTTPException(
                 status_code=400,
                 detail="Invalid forecast type provided. Valid values are 'current_weather', 'five-day_weather', 'a_days_weather'."
             )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"get_weather_forecast function encountered an error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Could not retrieve the weather forecast.")
+
+
+@router.get("/weather_and_recommendations/{forecast_type}", response_model=List[Dict[str, Union[dict, schemas.WeatherForecast, schemas.Recommendation]]])
+async def get_weather_and_recommendations(
+    forecast_type: str = Path(
+        ...,
+        description="The type of forecast to return. Possible values are 'current_weather', 'five-day_weather', 'a_days_weather'"
+    ),
+    location_name: Optional[str] = None,
+    latitude: Optional[float] = None,
+    longitude: Optional[float] = None,
+    day: Optional[date] = None,
+    db: Session = Depends(database.get_db),
+) -> List[Dict[str, Union[dict, schemas.WeatherForecast, schemas.Recommendation]]]:
+    """
+    Retrieves the weather forecast and recommendations based on the provided parameters.
+
+    Args:
+        forecast_type (str): The type of forecast to return.
+            Possible values are 'current_weather', 'five-day_weather', 'a_days_weather'.
+        location_name (str, optional): The name of the location. Defaults to None.
+        latitude (float, optional): The latitude of the location. Defaults to None.
+        longitude (float, optional): The longitude of the location. Defaults to None.
+        day (date, optional): The specific day for the forecast. Defaults to None.
+        db (Session, optional): The database session. Defaults to Depends(database.get_db).
+
+    Returns:
+        List[Dict[str, Union[dict, schemas.WeatherForecast, schemas.Recommendation]]]: 
+        A list of dictionaries containing the forecast and recommendations.
+
+    Raises:
+        HTTPException: If an error occurs while retrieving the weather and recommendations.
+    """
+    try:
+        weather_forecast = await get_weather_forecast(forecast_type, location_name, latitude, longitude, day, db)
+        if isinstance(weather_forecast, List):
+            forecasts_and_recommendations = []
+            for forecast in weather_forecast:
+                recommendations = await get_recommendations(schemas.WeatherRecommenderData(**forecast.__dict__))
+                days_forecast_and_recommendation = {"forecast": forecast.__dict__, "recommendations": recommendations}
+                forecasts_and_recommendations.append(days_forecast_and_recommendation)
+            return forecasts_and_recommendations
+        else:
+            recommendations = await get_recommendations(schemas.WeatherRecommenderData(**weather_forecast.__dict__))
+        return [{"forecast": weather_forecast.__dict__, "recommendations": recommendations}]
+    except ValueError as e:
+        logger.error(f"get_weather_and_recommendations function encountered an error: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
+    except HTTPException as e:
+        if e.status_code != 500:
+            raise
+        logger.error(f"get_weather_and_recommendations function encountered an HTTP error: {str(e.detail)}")
+        raise HTTPException(status_code=500, detail="Could not get the weather and recommendations")
+    except Exception as e:
+        logger.error(f"get_weather_and_recommendations function encountered an unexpected error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Could not get the weather and recommendations")
