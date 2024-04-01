@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
+import Weather from "./weather-component";
 
 class Profile extends Component {
 
@@ -25,11 +26,11 @@ class Profile extends Component {
                 <h5>Sandra Kush</h5>
                 <p className="proile-rating">Frequent Place: <span>Mombasa Diani</span></p>
                 <nav>
-                  <div className="nav nav-tabs nav-justified" id="nav-tab" role="tablist">
-                    <button className="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Weather Pattern</button>
-                    <button className="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">My next destination</button>
-                  </div>
-                </nav>
+                                                <div class="nav nav-tabs nav-justified" id="nav-tab" role="tablist">
+                                                  <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Weather Pattern</button>
+                                                  <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">My next destination</button>
+                                                </div>
+                                              </nav>
               </div>
             </div>
             <div className="col-md-2">
@@ -39,43 +40,41 @@ class Profile extends Component {
           <div className="row">
             <div className="col-md-4">
               <div className="profile-work">
-                <p>WORK LINK</p>
-                <a href="">Website Link</a><br/>
-                <a href="">Bootsnipp Profile</a><br/>
-                <a href="">Bootply Profile</a>
-                <p>SKILLS</p>
-                <a href="">Web Designer</a><br/>
-                <a href="">Web Developer</a><br/>
-                <a href="">WordPress</a><br/>
-                <a href="">WooCommerce</a><br/>
-                <a href="">PHP, .Net</a><br/>
+                <p className="text-warning bg-secondary">PREVIOUS DESTINATION</p>
+                <p><a href="destination?id=1">Kenya National Park</a></p>
+                <p><a href="destination?id=3">Zanzibar Island</a></p>
+                <p className="text-warning bg-dark">CURRENT DESTINATION</p>
+                <p><a href="destination?id=3">Zanzibar Island</a></p>
+                <p className="text-warning bg-info">WALLDROP SUGGESTION</p>
+                <p><a href="destination?id=3">Weather: Rainny</a></p>
+                <p><a href="destination?id=3">Walldrop: Warm clothes</a></p>
+
               </div>
             </div>
             <div className="col-md-8">
               <div className="tab-content" id="nav-tabContent">
                 <div className="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                  <div className="weather-container-two">
-                    <div className="weather-input" style={{ width: '100% !important' }}>
-                      <h5>Enter Name Of A City</h5>
-                      <input className="city-input" type="text" placeholder="E.g., Nairobi, Kisumu"/>
-                      <button className="search-btn bg-warning">Search</button>
-                      <div className="separator"></div>
-                      <button id="locationNameBtn" className="location-btn">Use Current Location</button>
-                    </div>
-                    <div className="weather-data" style={{ marginTop: '30px' }}>
-                      <div className="current-weather">
-                        <div className="details">
-                          <h2></h2>
-                          <h6>Temperature: __°C</h6>
-                          <h6>Wind: __ M/S</h6>
-                          <h6>Humidity: __%</h6>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  {/* Add weather component here */}
+                  <Weather />
                 </div>
                 <div className="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                  Another here
+                <div className="form p-5">
+                  <form method="POST">
+                    <div className="mb-3">
+                        <label for="cityname" className="" data-placeholder-label="Name (optional)">City Name:</label>
+                        <input type="text" className="form-control" id="name" placeholder=""/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="traveDate" className="" data-placeholder-label="Email (optional)">Travel Dates:</label>
+                        <input type="date" className="form-control" id="traveDate" placeholder=""/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="activities" className="" data-placeholder-label="Feedback">Number of days</label>
+                        <input class="form-control" id="activities" rows="5" placeholder=""/>
+                    </div>
+                    <button type="submit" className="btn btn-warning">Enter</button>
+                  </form>
+                  </div>
                 </div>
               </div>
             </div>

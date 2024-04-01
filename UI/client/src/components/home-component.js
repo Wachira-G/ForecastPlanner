@@ -111,7 +111,7 @@ formatDate = (dateString) => {
                   <h6>Humidity: {weatherData[0].humidity}%</h6>
                   <h6>Precipitation: {weatherData[0].precipitation_probability}</h6>
                   {/* Add weather icon */}
-                  <div>{this.getWeatherIcon(weatherData[0].weather)}</div>
+                  <div className="icon">{this.getWeatherIcon(weatherData[0].precipitation_probability)}</div>
                 </div>
               ) : (
                 <p>Loading...</p>
@@ -120,21 +120,24 @@ formatDate = (dateString) => {
           </div>
           <div className="days-forecast">
             <h2>5-Days Forecast</h2>
-            <ul className="weather-cards">
+            <div className="card-group">
               {weatherData.slice(1, 6).map((forecast) => (
-                <li className="card" key={forecast.forecast_id}>
-                  <h3>{this.formatDate(forecast.date_time)}</h3>
-                  <h4>{forecast.location_id}</h4>
-                  <h6>Temp: {forecast.temperature}°C</h6>
-                  <h6>Wind: {forecast.wind_speed} M/S</h6>
-                  <h6>Humidity: {forecast.humidity}%</h6>
-                  <h6>Precipitation: {forecast.precipitation_probability}</h6>
-                  {/* Add weather icon */}
-                  <div>{this.getWeatherIcon(forecast.weather)}</div>
-                </li>
+                <div className="card m-2" key={forecast.forecast_id}>
+                  <div className="card-body">
+                    <h4 className="card-title">{this.formatDate(forecast.date_time)}</h4>
+                    <h5>{forecast.location_id}</h5>
+                    <h6 className="card-text">Temp: {forecast.temperature}°C</h6>
+                    <h6 className="card-text">Wind: {forecast.wind_speed} M/S</h6>
+                    <h6 className="card-text">Humidity: {forecast.humidity}%</h6>
+                    <h6 className="card-text">Precipitation: {forecast.precipitation_probability}</h6>
+                    {/* Add weather icon */}
+                    <div className="weather-icon">{this.getWeatherIcon(forecast.weather)}</div>
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
+
         </div>
       </div>
     </section>
