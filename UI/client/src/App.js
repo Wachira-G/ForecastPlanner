@@ -63,14 +63,15 @@ class App extends Component {
     return (
       <Router history={history}>
         <div>
-          <nav className="navbar navbar-expand navbar-dark bg-dark py-4">
+          <nav className="navbar navbar-expand-lg navbar-dark bg-dark py-4">
+          <div className="container">
             <Link to={"/"} className="navbar-brand">
               Forcast Planner
             </Link>
             <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
             <span className="navbar-toggler-icon"></span>
             </button>
-            <div className="navbar-nav mr-auto">
+            <div className="navbar-nav ms-auto">
               <li className="nav-item">
                 <Link to={"/home"} className="nav-link">
                   Home
@@ -79,7 +80,7 @@ class App extends Component {
 
               {currentUser && (
                 <li className="nav-item">
-                  <Link to={"/user"} className="nav-link">
+                  <Link to={"/profile"} className="nav-link">
                     User
                   </Link>
                 </li>
@@ -87,7 +88,7 @@ class App extends Component {
             </div>
 
             {currentUser ? (
-              <div className="navbar-nav ml-auto">
+              <div className="navbar-nav ms-auto">
                 <li className="nav-item">
                   <Link to={"/profile"} className="nav-link">
                     {currentUser.phone}
@@ -100,7 +101,7 @@ class App extends Component {
                 </li>
               </div>
             ) : (
-              <div className="navbar-nav ml-auto">
+              <div className="navbar-nav ms-auto">
               <li className="nav-item"><a href="#weather" className="nav-link">Weather</a></li>
                <li className="nav-item"><a href="#about" className="nav-link">About</a></li>
                <li className="nav-item"><a href="#reviews" className="nav-link">Reviews</a></li>
@@ -118,6 +119,7 @@ class App extends Component {
                 </li>
               </div>
             )}
+            </div>
           </nav>
 
           <div className="container">

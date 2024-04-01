@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import UserService from "../services/user-service";
+import ProfileService from "../services/profile-service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSun, faCloudRain, faSnowflake, faWind } from "@fortawesome/free-solid-svg-icons";
 
@@ -19,7 +19,7 @@ export default class Home extends Component {
    }
 
    fetchWeatherData(city) {
-  UserService.getPublicContent(city)
+  ProfileService.getWeatherContent(city)
     .then((response) => {
       this.setState({
         weatherData: response.data,
@@ -118,28 +118,32 @@ formatDate = (dateString) => {
               )}
             </div>
           </div>
-          <div className="days-forecast">
-            <h2>5-Days Forecast</h2>
-            <div className="card-group">
-              {weatherData.slice(1, 6).map((forecast) => (
-                <div className="card m-2" key={forecast.forecast_id}>
-                  <div className="card-body">
-                    <h4 className="card-title">{this.formatDate(forecast.date_time)}</h4>
-                    <h5>{forecast.location_id}</h5>
-                    <h6 className="card-text">Temp: {forecast.temperature}°C</h6>
-                    <h6 className="card-text">Wind: {forecast.wind_speed} M/S</h6>
-                    <h6 className="card-text">Humidity: {forecast.humidity}%</h6>
-                    <h6 className="card-text">Precipitation: {forecast.precipitation_probability}</h6>
-                    {/* Add weather icon */}
-                    <div className="weather-icon">{this.getWeatherIcon(forecast.weather)}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
 
         </div>
+
       </div>
+      <div className="days-forecast">
+        <h2>5-Days Forecast</h2>
+        <div className="row">
+          {weatherData.slice(1, 6).map((forecast) => (
+            <div className="col-md-4" key={forecast.forecast_id}>
+              <div className="card m-2">
+                <div className="card-body">
+                  <h4 className="card-title">{this.formatDate(forecast.date_time)}</h4>
+                  <h5>{forecast.location_id}</h5>
+                  <h6 className="card-text">Temp: {forecast.temperature}°C</h6>
+                  <h6 className="card-text">Wind: {forecast.wind_speed} M/S</h6>
+                  <h6 className="card-text">Humidity: {forecast.humidity}%</h6>
+                  <h6 className="card-text">Precipitation: {forecast.precipitation_probability}</h6>
+                  {/* Add weather icon */}
+                  <div className="weather-icon">{this.getWeatherIcon(forecast.weather)}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
     </section>
 
         <section className="section bg-secondary p-5" id="about">

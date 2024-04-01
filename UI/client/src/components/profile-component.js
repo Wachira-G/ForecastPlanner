@@ -2,11 +2,42 @@ import React, { Component } from "react";
 import { Redirect } from 'react-router-dom';
 import { connect } from "react-redux";
 import Weather from "./weather-component";
+import ProfileService from "../services/profile-service";
+import Destination from "./destination-component";
 
 class Profile extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      content: "",
+    };
+  }
+
+  componentDidMount() {
+    this.fetchUserProfile();
+  }
+
+  fetchUserProfile() {
+    ProfileService.getUserProfile()
+      .then(response => {
+        this.setState({
+          content: response.data.email
+        });
+      })
+      .catch(error => {
+        this.setState({
+          content:
+            (error.response && error.response.data) ||
+            error.message ||
+            error.toString()
+        });
+      });
+  }
 
   render() {
     const { user: currentUser } = this.props;
+    const { content } = this.state;
 
     if (!currentUser) {
       return <Redirect to="/login" />;
@@ -23,14 +54,14 @@ class Profile extends Component {
             </div>
             <div className="col-md-6">
               <div className="profile-head">
-                <h5>Sandra Kush</h5>
+                <h5>Email: {this.state.content}</h5>
                 <p className="proile-rating">Frequent Place: <span>Mombasa Diani</span></p>
                 <nav>
-                                                <div class="nav nav-tabs nav-justified" id="nav-tab" role="tablist">
-                                                  <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Weather Pattern</button>
-                                                  <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">My next destination</button>
-                                                </div>
-                                              </nav>
+                  <div className="nav nav-tabs nav-justified" id="nav-tab" role="tablist">
+                    <button className="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Weather Pattern</button>
+                    <button className="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">My next destination</button>
+                  </div>
+                </nav>
               </div>
             </div>
             <div className="col-md-2">
@@ -48,7 +79,6 @@ class Profile extends Component {
                 <p className="text-warning bg-info">WALLDROP SUGGESTION</p>
                 <p><a href="destination?id=3">Weather: Rainny</a></p>
                 <p><a href="destination?id=3">Walldrop: Warm clothes</a></p>
-
               </div>
             </div>
             <div className="col-md-8">
@@ -58,23 +88,7 @@ class Profile extends Component {
                   <Weather />
                 </div>
                 <div className="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                <div className="form p-5">
-                  <form method="POST">
-                    <div className="mb-3">
-                        <label for="cityname" className="" data-placeholder-label="Name (optional)">City Name:</label>
-                        <input type="text" className="form-control" id="name" placeholder=""/>
-                    </div>
-                    <div class="mb-3">
-                        <label for="traveDate" className="" data-placeholder-label="Email (optional)">Travel Dates:</label>
-                        <input type="date" className="form-control" id="traveDate" placeholder=""/>
-                    </div>
-                    <div class="mb-3">
-                        <label for="activities" className="" data-placeholder-label="Feedback">Number of days</label>
-                        <input class="form-control" id="activities" rows="5" placeholder=""/>
-                    </div>
-                    <button type="submit" className="btn btn-warning">Enter</button>
-                  </form>
-                  </div>
+                  <Destination />
                 </div>
               </div>
             </div>

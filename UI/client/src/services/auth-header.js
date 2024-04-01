@@ -8,9 +8,9 @@ export default function authHeader() {
   const user = JSON.parse(localStorage.getItem("user"));
 
   // Check if user object and accessToken property are present
-  if (user && user.accessToken) {
+  if (user && user.access_token) {
     // If present, construct and return authorization header with the access token
-    return { "Authorization": "Bearer " + user.accessToken };
+    return { "Authorization": "Bearer " + user.access_token };
   } else {
     // If user object or accessToken is missing, return an empty object
     return {};

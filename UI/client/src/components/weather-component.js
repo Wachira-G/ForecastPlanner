@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import UserService from "../services/user-service";
+import ProfileService from "../services/profile-service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSun, faCloudRain, faSnowflake, faWind } from "@fortawesome/free-solid-svg-icons";
 
@@ -19,7 +19,7 @@ export default class Weather extends Component {
    }
 
    fetchWeatherData(city) {
-  UserService.getPublicContent(city)
+  ProfileService.getWeatherContent(city)
     .then((response) => {
       this.setState({
         weatherData: response.data,
