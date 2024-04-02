@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import Weather from "./weather-component";
 import ProfileService from "../services/profile-service";
 import Destination from "./destination-component";
+import Recommendation from "./recommendation-component";
+import DestinationList from "./destination-list-component";
 
 class Profile extends Component {
   constructor(props) {
@@ -71,14 +73,8 @@ class Profile extends Component {
           <div className="row">
             <div className="col-md-4">
               <div className="profile-work">
-                <p className="text-warning bg-secondary">PREVIOUS DESTINATION</p>
-                <p><a href="destination?id=1">Kenya National Park</a></p>
-                <p><a href="destination?id=3">Zanzibar Island</a></p>
-                <p className="text-warning bg-dark">CURRENT DESTINATION</p>
-                <p><a href="destination?id=3">Zanzibar Island</a></p>
-                <p className="text-warning bg-info">WALLDROP SUGGESTION</p>
-                <p><a href="destination?id=3">Weather: Rainny</a></p>
-                <p><a href="destination?id=3">Walldrop: Warm clothes</a></p>
+                <DestinationList />
+                <Recommendation />
               </div>
             </div>
             <div className="col-md-8">
