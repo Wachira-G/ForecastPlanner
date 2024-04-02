@@ -105,7 +105,7 @@ formatDate = (dateString) => {
               {weatherData.length > 0 ? (
                 <div>
                   <h2>{this.formatDate(weatherData[0].date_time)}</h2>
-                  <h3>{weatherData[0].location_id}</h3>
+                  <h3>{weatherData[0].location_name}</h3>
                   <h6>Temperature: {weatherData[0].temperature}°C</h6>
                   <h6>Wind: {weatherData[0].wind_speed} M/S</h6>
                   <h6>Humidity: {weatherData[0].humidity}%</h6>
@@ -130,7 +130,7 @@ formatDate = (dateString) => {
               <div className="card m-2">
                 <div className="card-body">
                   <h4 className="card-title">{this.formatDate(forecast.date_time)}</h4>
-                  <h5>{forecast.location_id}</h5>
+                  <h5>{forecast.location_name}</h5>
                   <h6 className="card-text">Temp: {forecast.temperature}°C</h6>
                   <h6 className="card-text">Wind: {forecast.wind_speed} M/S</h6>
                   <h6 className="card-text">Humidity: {forecast.humidity}%</h6>

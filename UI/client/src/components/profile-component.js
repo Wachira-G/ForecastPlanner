@@ -56,7 +56,7 @@ class Profile extends Component {
             </div>
             <div className="col-md-6">
               <div className="profile-head">
-                <h5>Email: {this.state.content}</h5>
+                <h6>Email: {this.state.content}</h6>
                 <p className="proile-rating">Frequent Place: <span>Mombasa Diani</span></p>
                 <nav>
                   <div className="nav nav-tabs nav-justified" id="nav-tab" role="tablist">

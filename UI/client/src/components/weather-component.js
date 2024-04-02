@@ -91,7 +91,7 @@ formatDate = (dateString) => {
               {weatherData.length > 0 ? (
                 <div>
                   <h2>{this.formatDate(weatherData[0].date_time)}</h2>
-                  <h3>{weatherData[0].location_id}</h3>
+                  <h3>{weatherData[0].location_name}</h3>
                   <h6>Temperature: {weatherData[0].temperature}°C</h6>
                   <h6>Wind: {weatherData[0].wind_speed} M/S</h6>
                   <h6>Humidity: {weatherData[0].humidity}%</h6>
